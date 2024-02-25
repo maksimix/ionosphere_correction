@@ -1,0 +1,1 @@
+qembed share/icons/*.png share/icons/small/*.xpm share/icons/small/*.png share/icons/disabled/*.png > share/images.h

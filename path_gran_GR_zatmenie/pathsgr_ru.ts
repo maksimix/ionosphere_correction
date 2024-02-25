@@ -1,0 +1,21 @@
+<!DOCTYPE TS><TS>
+<context>
+    <name>Path</name>
+    <message>
+        <source>Path</source>
+        <translation>Траектория</translation>
+    </message>
+    <message>
+        <source>Read</source>
+        <translation>Читать</translation>
+    </message>
+    <message>
+        <source>Run</source>
+        <translation>Запустить</translation>
+    </message>
+    <message>
+        <source>Exit</source>
+        <translation>Выход</translation>
+    </message>
+</context>
+</TS>

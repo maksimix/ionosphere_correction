@@ -1,0 +1,5 @@
+cd ./libf2c
+make -f makefile.u clean
+rm ../libf2c.a
+cd ../
+rm ./f2c.h

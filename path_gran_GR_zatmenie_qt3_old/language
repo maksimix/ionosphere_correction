@@ -1,0 +1,23 @@
+if [ "$1" = -h -o "$1" = --help ]
+then
+  echo ""
+  echo "This program uses Qt 3.x library!"
+  echo "Usage: ./locale [command]"
+  echo "commands:"
+  echo "--help        (-h)       This help;"
+  echo "--extract     (-e)       Extract all tr() strings from project;"
+  echo "--noobsolete  (-n)       Update all tr() strings and delete obsolete strings;"
+  echo "(default)            Update translation file;"
+else 
+  if [ "$1" = -e -o "$1" = --extract ]
+  then
+    lupdate ./paths_u.pro
+  else
+    if [ "$1" = -n -o "$1" = --noobsolete ]  
+    then
+      lupdate -noobsolete ./paths_u.pro
+    else
+      lrelease ./paths_u.pro
+    fi  
+  fi
+fi

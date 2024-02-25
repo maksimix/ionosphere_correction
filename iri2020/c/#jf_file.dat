@@ -1,0 +1,52 @@
+		C    i       .true.                  .false.          standard version
+		C    -----------------------------------------------------------------
+1	C    0    Ne computed            Ne not computed                     t
+1	C    1    Te, Ti computed        Te, Ti not computed                 t
+1	C    2    Ne & Ni computed       Ni not computed                     t
+0	C    3    B0,B1 - Bil-2000       B0,B1 - other models jf(31)     false
+0	C    4    foF2 - CCIR            foF2 - URSI                     false
+0	C    5    Ni - DS-1995 & DY-1985 Ni - RBV-2010 & TTS-2005        false
+1	C    6    Ne - Tops: f10.7<188   f10.7 unlimited                     t            
+1	C    7    foF2 from model        foF2 or NmF2 - user input           t
+1	C    8    hmF2 from model        hmF2 or M3000F2 - user input        t
+1	C    9    Te - Standard          Te - Using Te/Ne correlation        t
+1	C   10    Ne - Standard Profile  Ne - Lay-function formalism         t
+1	C   11    Messages to unit 6     to messages.txt on unit 11          t
+1	C   12    foF1 from model        foF1 or NmF1 - user input           t
+1	C   13    hmF1 from model        hmF1 - user input (only Lay version)t
+1	C   14    foE  from model        foE or NmE - user input             t
+1	C   15    hmE  from model        hmE - user input                    t
+1	C   16    Rz12 from file         Rz12 - user input                   t
+1	C   17    IGRF dip, magbr, modip old FIELDG using POGO68/10 for 1973 t
+1	C   18    F1 probability model   critical solar zenith angle (old)   t
+1	C   19    standard F1            standard F1 plus L condition        t
+0	C   20    ion drift computed     ion drift not computed          false
+1	C   21    ion densities in %     ion densities in m-3                t
+0	C   22    Te_tops (Bil-1985)     Te_topside (TBT-2012)           false
+1	C   23    D-region: IRI-1990     FT-2001 and DRS-1995                t
+1	C   24    F107D from APF107.DAT  F107D user input (oarr(41))         t
+0	C   25    foF2 storm model       no storm updating                   t
+1	C   26    IG12 from file         IG12 - user                         t
+0	C   27    spread-F probability 	 not computed                    false
+0	C   28    IRI01-topside          new options as def. by JF(30)   false
+0	C   29    IRI01-topside corr.    NeQuick topside model   	     false  (29,30) = (t,t) IRIold, (f,t) IRIcor, (f,f) NeQuick
+1	C   30    B0,B1 ABT-2009	     B0 Gulyaeva-1987 h0.5               t  (4,31) = (t,t) Bil-00, (f,t) ABT-09, (f,f) Gul-87, (t,f) not used
+1	C   31    F10.7_81 from file     F10.7_81 - user input (oarr(46))    t
+0	C   32    Auroral boundary model on/off  true/false	             false
+0	C   33    Messages on            Messages off                        t
+0	C   34    foE storm model        no foE storm updating           false
+1	C   35    hmF2 w/out foF2_storm  with foF2-storm                     t
+1	C   36    topside w/out foF2-storm  with foF2-storm                  t
+1	C   37    turn WRITEs off in IRIFLIP   turn WRITEs on                t
+0	C   38    hmF2 (M3000F2)         new models                      false
+1	C   39    hmF2 AMTB-model        Shubin-COSMIC model                 t
+1	C   40    Use COV=F10.7_365      COV=f(IG12) (IRI before Oct 2015)   t
+1	C   41    Te with PF10.7 dep.	 w/o PF10.7 dependance               t
+1	C   42    B0 from model          B0 user input                       t
+1	C   43    B1 from model          B1 user input in OARR(35)           t
+1	C   44    HNEA=65/80km dya/night HNEA user input in OARR(89)         t
+1	C   45    HNEE=2000km 	         HNEE user input in OARR(90)         t
+0	C   46    CGM computation on 	 CGM computation off             false	
+1	C   47    Ti  Tru-2021           Bil-1981                            t
+
+		

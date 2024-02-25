@@ -1,0 +1,3 @@
+5.333000  E   0   0.000    0.000     -nan     -nan    -nan      nan      nan      nan      nan   -13.068   9.300000e+16
+5.333000  F1  0   0.000    0.000     -nan     -nan    -nan      nan      nan      nan      nan   -13.068   9.300000e+16
+5.333000  F2  0   0.000    0.000     -nan     -nan    -nan      nan      nan      nan      nan   -13.068   9.300000e+16

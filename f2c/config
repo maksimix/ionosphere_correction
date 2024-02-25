@@ -1,0 +1,5 @@
+cd ./libf2c
+make -f makefile.u
+cp libf2c.a ../
+cd ../
+cp ./src/f2c.h ./

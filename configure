@@ -1,0 +1,121 @@
+#!/bin/bash
+
+CLEAN_PRG=false
+BUILD_PRG=true
+MAKE_LIB=false
+MAKE_LIB_command=''
+MAKE_command="-j 2"
+
+for c_option
+do
+    c_option_arg=`expr "x$c_option" : 'x[^=]*=\(.*\)'`
+
+    case $c_option in
+	--clean | -c) #clean option
+	if( ! $CLEAN_PRG ) ; then
+	    CLEAN_PRG=true
+	    BUILD_PRG=false
+	fi
+	;;
+
+	--lib | -l)
+	MAKE_LIB=true
+	MAKE_LIB_command="lib"
+	;;
+
+	--build | -b) #build option
+	BUILD_PRG=true
+	;;
+
+	--rebuild | -r) #rebuild option
+	CLEAN_PRG=true
+	BUILD_PRG=true
+	;;
+
+	--help | -h | *) # HELP
+	echo ""
+	echo "This program uses Qt 3.x library!"
+	echo "Usage: ./configure [options]"
+	echo "options:"
+	echo "       --help    (-h)          This help"
+#	echo "       --set_rpu_type=[type]   Set type of RPU (default - 3chr6)"
+#	echo "                               Types: 3chr6, crpu-kv"
+	echo "       --set_rpu_path=[path]   Set RPU driver path (default - ./usb3chr6.rep)"
+	
+	echo "       --set_adc_type=[type]   Set type of ADC (default - 3chr3)"
+	echo "                               Types: 3chr3, 414m1"
+	echo "       --set_adc_path=[path]   Set RPU driver path (default - ./adc3chr3.rep)"
+	
+	echo "       --clean   (-c)          Clear all compiled files"
+	echo "       --built   (-b)          Configure and build the project"
+	echo "       --rebuilt (-r)          Clear all compiled files and build the project"
+	echo "         (default)             Built the project"
+	exit
+	;;
+    esac
+done
+
+echo "Configure:"
+echo "Clean = $CLEAN_PRG"
+echo ""
+
+if( $CLEAN_PRG ) ; then
+
+    echo "Clean internel iri2007..."
+    cd ./iri_3d/iri2007
+    make clean
+    cd ../../
+
+    qmake path.pro
+    make clean
+
+    echo "Clean makefiles..."
+    rm -f -v Makefile*
+    rm -f -v Makefile.*
+    rm -f -v ./path_gran/Makefile*
+    rm -f -v ./path_gran/Makefile.*
+    rm -f ./path_gran/*~
+    rm -f -v ./path_tIRI/Makefile*
+    rm -f -v ./path_tIRI/Makefile.*
+    rm -f ./path_tIRI/*~
+    rm -f -v ./path_tIRI_GR/Makefile*
+    rm -f -v ./path_tIRI_GR/Makefile.*
+    rm -f ./path_tIRI_GR/*~
+    rm -f -v ./pk2/Makefile*
+    rm -f -v ./pk2/Makefile.*
+    rm -f ./pk2/*~
+    rm -f -v ./pk3/Makefile*
+    rm -f -v ./pk3/Makefile.*
+    rm -f ./pk3/*~
+    rm -f -v ./pk4/Makefile*
+    rm -f -v ./pk4/Makefile.*
+    rm -f ./pk4/*~
+    rm -f -v ./pk2/Makefile*
+    rm -f -v ./pk2/Makefile.*
+    rm -f ./pk2/*~
+    rm -f -v ./profil/Makefile*
+    rm -f -v ./profil/Makefile.*
+    rm -f ./profil/*~
+
+    echo "Project cleaned..."
+    echo ""
+
+    if( ! $BUILD_PRG ) ; then
+	exit
+    fi
+fi
+
+echo "Building internel iri2007..."
+cd ./iri_3d/iri2007
+make
+cd ../../
+
+echo "Building internel path_gran..."
+qmake path.pro
+
+echo "Configure complited. Please type \"make\" to compile program..."
+
+if( $BUILD_PRG ) ; then
+    make $MAKE_command
+fi
+

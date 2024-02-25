@@ -1,0 +1,93 @@
+<QT       += core gui
+
+greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+
+
+
+TEMPLATE	= app
+CONFIG		+= qt warn_on thread release
+
+TARGET          = paths_gr
+DEPENDPATH=../../include 
+#gfortran
+LIBS            = ../iri2012/libiri2012.a -lgfortran
+#g77
+#INTERFACE_DECL_PATH=.
+#DEFINES     = _POSIX GL
+DEFINES     = GL  
+#QMAKE_LFLAGS_WINDOWS = /NODEFAULTlIB:MSVCRT.LIB
+QMAKE_CFLAGS_RELEASE = 
+QMAKE_CXXFLAGS_RELEASE = 
+QMAKE_CFLAGS_MT= 
+QMAKE_CXXFLAGS_MT=
+OBJECTS_DIR = ./obj
+TRANSLATIONS = ./pathsgr_ru.ts
+UI_DIR      = ./ui
+FORMS = ./ui/path.ui
+
+HEADERS		= paths.h \
+                  ../splayn/spcub.h \
+                  ../draw/draw.h \
+                  ../draw/draw2.h \
+                  ../draw/drawbase.h \
+                  ../draw/drawmembase.h \
+                  ../draw/drawpoligonmemfull.h \
+                  ../iri_4d/iri_4d.h \
+                  mainwindow.h \
+
+SOURCES		= main.cpp \
+                  mainwindow.cpp \
+                  mainpaths.cpp \
+#		  main__.c \
+		  coords.cpp \
+                  coors.cpp \
+                  funcs.cpp \
+                  infils.cpp \
+                  inions.cpp \
+                  ionos.cpp \
+                  ltv.cpp \
+                  init_fil.cpp \
+                  magfis.cpp \
+		  outtrs.cpp \
+		  soluts.cpp \
+                  solt.cpp \
+		  sopr.cpp \
+		  treks.cpp \
+                  moda.cpp \
+                  soltA.cpp \
+                  ssno.cpp \
+                  grss.cpp \
+                  wr_fil.cpp \
+                  shell.cpp \
+                  prion.cpp \
+                  mpchs.cpp \
+                  extern.cpp \
+		  ../antenn/polar.cpp \
+		  ../antenn/trant.cpp \
+		  ../antenn/si.cpp \
+		  ../antenn/resist.cpp \
+		  ../antenn/rerth.cpp \
+		  ../antenn/recant.cpp \
+		  ../antenn/rebeam.cpp \
+		  ../antenn/loop.cpp \
+		  ../antenn/get_ant.cpp \
+		  ../antenn/fm.cpp \
+		  ../antenn/ci.cpp \
+		  ../antenn/ellips.cpp \
+		  ../antenn/dipole.cpp \
+		  ../antenn/bs.cpp \
+		  ../antenn/beam.cpp \
+		  ../iri_4d/eschar.cpp \
+                  ../iri_4d/iri_4d.cpp \
+		  ../splayn/spcub.cpp \
+		  ../splayn/progon.cpp \
+                  ../draw/draw.cpp \
+                  ../draw/draw2.cpp \
+                  ../draw/grraz.cpp \
+                  ../draw/grrazmem.cpp \
+                  ../draw/drawpoligonmemfull.cpp \
+                  ../draw/drawmembase.cpp \
+                  ../draw/drawbase.cpp
+                  
+		  
+
