@@ -139,10 +139,8 @@ char *getInputFile(int m, char * dataFileName, int freq, int hop, int city, int 
         char *inFileName = (char*)malloc(sizeof(char)*200) ;
         const int strNum = 5;
         sprintf(inFileName,"results/out_tIRI_path0s_Rostov_%s_noCor_%d_%s",getCity(city),freq,dataFileName );
-
-          //    printf("datafilename - %s\n",inFileName);
         FILE* file = fopen(inFileName,"w");
-  //      printf("file norm");
+
         int d1 = 0;
         sscanf(dataFileName,"%*[^_]_%*[^_]_%*[^_]_%d%*s",&d1);
         d1 = (int)ceil(((double)d1/100))*10000;
