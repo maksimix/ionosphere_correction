@@ -1,4 +1,4 @@
-		International Reference Ionosphere Software (Oct 12, 2021)
+		International Reference Ionosphere Software (Oct 25, 2023)
 		----------------------------------------------------------
 
 ================================================================================
@@ -17,14 +17,12 @@ sets these options as the default.
 
 The compilation/link command in Fortran 77 is:
 f77 -o iri iritest.for irisub.for irifun.for iritec.for iridreg.for igrf.for 
- cira.for iriflip.for
+ cira.for iriflip.for rocdrift.for
  
 Directory Contents:
 -----------------------------------------------------------------------------------
 
-00_iri.tar		TAR file that includes all files from this directory and that was 
-                created in UNIX using 'tar -cvf 00_iri.tar *'. UNIX command to 
-                unpack is "tar -xvf 00_iri.tar". 
+00_iri.zip	Compressed file that includes all files from this directory 
 				 
 irisub.for      This file contains the main subroutine iri_sub. It computes 
                 height profiles if IRI output parameters (Ne, Te, Ti, Ni, vi) 
@@ -49,6 +47,8 @@ iridreg.for     Subroutines for the D region models of Friedrich-Torkar
 iritec.for      This file includes the subroutines for computing the ionospheric 
                 electron content from 60km up to a specified upper limit. 
 
+rocdrift.for    Equatorial vertical ion drift model of Fejer et al. (2009)
+
 cira.for        This file includes the subroutines and functions for computing 
                 the COSPAR International Reference Ionosphere (NRLMSIS-00) 
                 neutral temperature and densities. 
@@ -61,16 +61,23 @@ dgrf%%%%.dat    Definitive IGRF coefficients for the years 1945 to 2010 in steps
 igrf%%%%.dat    Prelimenary IGRF coefficients for most recent year (ASCII).
 igrf%%%%s.dat   IGRF coefficients for extrapolating 5 years into the future (ASCII).
  
-MCSAT%%.dat		Monthly coefficient files for the Shubin(2015) COSMIC-based hmF2 model
+MCSAT%%.dat     Monthly coefficient files for the Shubin(2015) COSMIC-based hmF2 model
                 %%=month+10
                 
-iritest.for 	Test program indicating how to use of the IRI subroutines. 
+iritest.for     Test program indicating how to use of the IRI subroutines. 
                 Requires irisub, irifun, iritec, iridreg, igrf,and cira.
-                
-IN ADDITION THE FOLLOWING FILES ARE REQUIRED THAT ARE NOT INCLUDED IN THIS DIRECTORY. 
-THESE FILES ARE AVAILABLE ON THE IRI HOMEPAGE IRIMODEL.ORG:
 
-At http://irimodel.org/indices/:
+irirtam.for     IRI subroutines that read the IRTAM coefficients and calculate NmF2, 
+                hmF2, and B0 for the Real-Time IRI. The process of assimilating ionsonde 
+                and Digisonde data into a Real-Time IRI is described in: Galkin et al.,
+                Radio Sci., 47, RS0L07, doi:10.1029/2011RS004952, 2012.
+
+irirtam-test.for  Test program for iritam.for
+                
+IN ADDITION THE FOLLOWING COEFFICIENTS AND INDICES FILES ARE REQUIRED THAT ARE NOT 
+INCLUDED IN THIS DIRECTORY. THESE FILES ARE AVAILABLE ON THE IRI HOMEPAGE IRIMODEL.ORG
+
+Indices files at http://irimodel.org/indices/:
 ig_rz.dat       This file(s) contains the solar and ionospheric indices (IG12, Rz12) 
                 for the time period from Jan 1958 onward. The file is updated 
                 quarterly. It is read by subroutine tcon in irifun.for (ASCII). 
@@ -81,11 +88,11 @@ apf107.dat      This file provides the 3-hour ap magnetic index and F10.7 daily
 Daily updates of these two files are available from the ECHAIM website (David 
 Themens) as described on irimodel.org.
 
-At http://irimodel.org/COMMON_FILES/:
-CCIR%%.dat		Monthly coefficient files for the CCIR foF2 and M(3000)F2 models
-                %%=month+10
-URSI%%.dat		Monthly coefficient files for the URSI foF2 model
-                %%=month+10
+Coefficients files at http://irimodel.org/COMMON_FILES/:
+CCIR_URSI.ZIP	Compressed file with all the required common files.
+CCIR%%.dat	Monthly coefficient files for the CCIR foF2 and M(3000)F2 models
+                (%% = month+10)
+URSI%%.dat	Monthly coefficient files for the URSI foF2 model (%% = month+10)
 
 -----------------------------------------------------------------------------------
 -----------------------------------------------------------------------------------
@@ -94,6 +101,11 @@ NOTE: Please consult the 'listing of changes' in the comments section at the top
 of each one of these programs for recent corrections and improvements.
 
 More information about the IRI project can be found at irimodel.org including
-access to sites that allow online computation and plotting of IRI parameters. 
+references of articles that describ the model and access to sites that allow online 
+computation and plotting of IRI parameters. 
+
+The IRI output parameters are described at irimodel.org/IRI-output-arrays.docs
+The available options are described at irimodel.org/IRI-Switches-options.docs
+Answers to Frequently Asked Questions are available at irimodel.org/docs/IRI_FAQ.pdf
 
 ----------------------------- dbilitza@gmu.edu -------------------------------------

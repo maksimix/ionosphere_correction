@@ -9698,10 +9698,10 @@ C     INTEGRAL OF ap
 
       ELSE
 
-        !  WRITE (6,*)' '
-        ! WRITE (6,*)' '
-         ! WRITE (6,*)'  Wrong Universal Time value -------- >>', ut
-         ! WRITE (6,*)' '
+          WRITE (6,*)' '
+          WRITE (6,*)' '
+          WRITE (6,*)'  Wrong Universal Time value -------- >>', ut
+          WRITE (6,*)' '
           GOTO 100
 
       END IF

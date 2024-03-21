@@ -62,40 +62,62 @@ const char *strArrNoCor[] = {
 
 
 
-char**  readDir(char dirName[], int*count){
-    char**  filesName;
-    //printf("%s\n",dirName);
-    int filesCount = 0;
-    struct dirent *in_file;
-    DIR *dir = opendir(dirName);
-    while((in_file=readdir(dir))!=NULL){
-            if(!strcmp(in_file->d_name,".")) continue;
-            if(!strcmp(in_file->d_name,"..")) continue;
- filesCount++;
-}
-    *count = filesCount;
-    filesName = dynamic_array_alloc<char>(filesCount,256);
-    closedir(dir);
-    dir = opendir(dirName);
-    int i = 0;
-    while((in_file=readdir(dir))!=NULL){
-        if(!strcmp(in_file->d_name,".")) continue;
-        if(!strcmp(in_file->d_name,"..")) continue;
+//char**  readDir(char dirName[], int*count){
+//    char**  filesName;
+//    //printf("%s\n",dirName);
+//    int filesCount = 0;
+//    struct dirent *in_file;
+//    DIR *dir = opendir(dirName);
+//    while((in_file=readdir(dir))!=NULL){
+//            if(!strcmp(in_file->d_name,".")) continue;
+//            if(!strcmp(in_file->d_name,"..")) continue;
+// filesCount++;
+//}
+//    *count = filesCount;
+//    filesName = dynamic_array_alloc<char>(filesCount,256);
+//    closedir(dir);
+//    dir = opendir(dirName);
+//    int i = 0;
+//    while((in_file=readdir(dir))!=NULL){
+//        if(!strcmp(in_file->d_name,".")) continue;
+//        if(!strcmp(in_file->d_name,"..")) continue;
 
 
-   strcpy(filesName[i],in_file->d_name);
-//  *(filesName[i]) = *(in_file->d_name);
-  i++;
+//   strcpy(filesName[i],in_file->d_name);
+////  *(filesName[i]) = *(in_file->d_name);
+//  i++;
+//return filesName;
+//}
 
-}
+std::vector<std::string> readDir(const char dirName[]) {
+        std::vector<std::string> filesName;
+        DIR *dir = opendir(dirName);
+        if (!dir) {
+            // Обработка ошибки открытия каталога
+            return filesName; // Возвращаем пустой вектор
+        }
 
-return filesName;
-};
+        struct dirent *in_file;
+        while ((in_file = readdir(dir)) != nullptr) {
+            if (strcmp(in_file->d_name, ".") != 0 && strcmp(in_file->d_name, "..") != 0) {
+                std::string fileName = in_file->d_name;
+                filesName.emplace_back(fileName);
+
+
+            }
+        }
+
+        closedir(dir);
+        return filesName;
+
+    }
+
+
 char * getCity(int city){
 switch(city){
 
 case 0:
-    return "Moscow";
+    return "Germany";
     break;
 case 1:
     return "Kashi";
@@ -127,22 +149,19 @@ double DayCalculate(int year, int month, int day){
     return round((month + (double)day/monthDay)*10)/10;
 
 }
-char *getInputFile(int m, char * dataFileName, int freq, int hop, int city, int day, int month, int year){
+char *getInputFile(int m, std::string dataFileName, int freq, int hop, int city, int day, int month, int year){
 //m:1 - TEC, 0 - noCOr
-
     double DAY = DayCalculate(year,month,day);
-
-   printf("day - %lg\n",DAY);
     switch(m){
     case 0:{
 
         char *inFileName = (char*)malloc(sizeof(char)*200) ;
         const int strNum = 5;
-        sprintf(inFileName,"results/out_tIRI_path0s_Rostov_%s_noCor_%d_%s",getCity(city),freq,dataFileName );
+        sprintf(inFileName,"results/out_tIRI_path0s_Rostov_%s_noCor_%d_%s",getCity(city),freq,dataFileName.c_str() );
         FILE* file = fopen(inFileName,"w");
 
         int d1 = 0;
-        sscanf(dataFileName,"%*[^_]_%*[^_]_%*[^_]_%d%*s",&d1);
+        sscanf(dataFileName.c_str(),"%*[^_]_%*[^_]_%*[^_]_%d%*s",&d1);
         d1 = (int)ceil(((double)d1/100))*10000;
         for(int i=0; i<17; i++){
             if(i==strNum)  fprintf(file,"%d %d 1500\n",d1,d1+5900);
@@ -150,7 +169,7 @@ char *getInputFile(int m, char * dataFileName, int freq, int hop, int city, int 
             else if(i==14) fprintf(file,"%d\n",hop);
             else fprintf(file,"%s",strArrNoCor[i]);
         };
-        fprintf(file,"%d/%s/%d/%s",year,getCity(city),freq,dataFileName);
+        fprintf(file,"%d/%s/%d/%s",year,getCity(city),freq,dataFileName.c_str());
         fclose(file);
 //         printf("file norm2\n\n\n");
         return inFileName;
@@ -160,7 +179,7 @@ char *getInputFile(int m, char * dataFileName, int freq, int hop, int city, int 
 
        char* inFileName = (char*) malloc(sizeof(char)*200) ;
         const int TECstrNum = 5; // number of TEC's string in input file
-        sprintf(inFileName,"results/out_tIRI_path0s_Rostov_%s_TEC_%d_%s",getCity(city),freq,dataFileName);
+        sprintf(inFileName,"results/out_tIRI_path0s_Rostov_%s_TEC_%d_%s",getCity(city),freq,dataFileName.c_str());
 
 
          FILE* file = fopen(inFileName,"w");
@@ -168,7 +187,7 @@ char *getInputFile(int m, char * dataFileName, int freq, int hop, int city, int 
 
          int d1 = 0;
 
-      sscanf(dataFileName,"%*[^_]_%*[^_]_%*[^_]_%d%*s",&d1);
+      sscanf(dataFileName.c_str(),"%*[^_]_%*[^_]_%*[^_]_%d%*s",&d1);
 
       int d0 = (int)ceil(((double)d1/100));
 
@@ -185,7 +204,7 @@ char *getInputFile(int m, char * dataFileName, int freq, int hop, int city, int 
            else  fprintf(file,"%s",strArrTEC[i]);
 
       };
-      fprintf(file,"%d/%s/%d/%s",year, getCity(city),freq,dataFileName);
+      fprintf(file,"%d/%s/%d/%s",year, getCity(city),freq,dataFileName.c_str());
       fclose(file);
 
 
@@ -199,3 +218,28 @@ char *getInputFile(int m, char * dataFileName, int freq, int hop, int city, int 
 
 }
 }
+
+template<typename T>
+T** dynamic_array_alloc(int N, int M)
+{
+    T **A = (T **)malloc(N*sizeof(T *));
+    for(int i = 0; i < N; i++) {
+        A[i] = (T *)malloc(M*sizeof(T));
+    }
+    return A;
+}
+
+
+//template<typename T>
+//void  dynamic_array_free(T **arr, int N)
+//{
+//   for(int i=0; i < N; i++)
+//   {
+
+
+//free(arr[i]);
+
+
+//   }
+//free(arr);
+//}

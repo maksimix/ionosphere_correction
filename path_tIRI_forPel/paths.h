@@ -21,7 +21,7 @@
 #include <stdio.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include "dataProcessor.cpp"
+//#include "dataProcessor.cpp"
 
 #include <map>
 #include <vector>
@@ -381,10 +381,11 @@ double standardDeviation(std::vector<double> &vData, double trueVal);
 double averageVal(std::vector<double> &vData);
 void WriteDataInFile(std::map<int,std::map<int, std::map<int, std::map<int,std::map<int,std::map<int, double>>>>>> &Data_map, FILE *file);
 char* getCity(int city);
-char ** readDir(char dirName[]);
+//char ** readDir(char dirName[]);
+std::vector<std::string> readDir(const char dirName[]);
 template <typename T> void  dynamic_array_free(T **arr, int N);
 template <typename T> T** dynamic_array_alloc(int N, int M);
-void resultMain( char*fileInName, char *filePelName, int cor,int freq, int hop);
+void resultMain(std::string fileInName, std::string filePelName, int cor, int freq, int _hop);
 char *getInputFile(int m, char * dataFileName, int freq,int hop,int city, int day, int month, int year);
 bool readIndexDasf(char *name);
 void prion(FILE   *out,

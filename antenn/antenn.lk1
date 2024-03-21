@@ -1,3 +1,0 @@
-FIL {DRAWSPAC.OBJ MYCOLOR.OBJ DRAWELL.OBJ DRAWDGR.OBJ FILDINIT.OBJ INIT_GR.OBJ GRRAZ.OBJ SAVEBMP.OBJ TRANT.OBJ SI.OBJ RESIST.OBJ RECANT.OBJ REBEAM.OBJ LOOP.OBJ GET_ANT.OBJ FM.OBJ ELLIPS.OBJ DIPOLE.OBJ CI.OBJ BS.OBJ BEAM.OBJ ANTVISUL.OBJ}
-LIBR c:\scitech\lib\dos32\wc11\dos4gw\pmode.lib, c:\scitech\lib\dos32\wc11\mvis.lib, c:\scitech\lib\dos32\wc11\mglcpp.lib, c:\scitech\lib\dos32\wc11\tech.lib, c:\scitech\lib\dos32\wc11\mglfx.lib, c:\scitech\lib\dos32\wc11\ztimer.lib
-

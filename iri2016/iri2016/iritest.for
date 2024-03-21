@@ -3,36 +3,61 @@ c-----------------------------------------------------------------------
 c
 c test program for the iri_web subroutine
 c
-c!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-c!!!!!!!!!!!!!!!!!!!!!!!! IMPORTANT !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!        
-c!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+c***********************************************************************
+c!********************* IMPORTANT PLEASE READ **************************        
+c***********************************************************************
 c
-c Programs using subroutine IRI_SUB need to include (see IRITEST.FOR):
+c This test program shows how to initialize and call the IRI subroutine 
+c IRI_SUB. Any program using IRI_SUB needs to include the following 
+c statements (this iritest.for program shows you how and where to include 
+c these statements):
 c
-c		call read_ig_rz
+c	call read_ig_rz
 c       call readapf107
 c
-c Programs using subroutine IRI_WEB need to include (see IRITEST.FOR):
+c The indices values are stored in the arrays ionoindx, indrz, aap, af107
+c and are passed to other subroutines via common/igrz/ and common/apfa/
 c
 c       do i=1,100
 c          oar(i,1)=-1.0
 c          enddo
 c
-c Please also make sure to use the default setting for the switches jf
-c as noted in this comment section further down:
-c       jf(4,5,6,21,23,28,29,30,33,35,39,40,47)=.false. all others .true.
-c        
-c Required i/o units:  
-c  KONSOL= 6 IRISUB: Program messages (used when jf(12)=.true. -> konsol)
-c  IUCCIR=10 IRISUB: CCIR and URSI coefficients (CCIR%%.ASC, %%=month+10)
-c  KONSOL=11 IRISUB: Program messages (used when jf(12)=.false. -> MESSAGES.TXT)
-c    KONSOL=6/11 is also used in IRIFUN and IGRF. COMMON/iounit/konsol,mess 
-c    is used to pass the value of KONSOL. If mess=false messages are turned off.
-c  UNIT=12 IRIFUN/TCON:  Solar/ionospheric indices IG12, R12 (IG_RZ.DAT) 
-c  UNIT=13 IRIFUN/APF..: Magnetic indices and F10.7 (APF107.DAT 
-c  UNIT=14 IGRF/GETSHC:  IGRF coeff. (DGRF%%%%.DAT or IGRF%%%%.DAT, %%%%=year)
+c If you want to use the standard version of IRI you should make sure 
+c that the JF(50) logical values are set to the recommended default 
+c values: 
+c     jf(4,5,6,23,30,33,35,39,40,47)=.false. all others =.true.
+c You can turn off (jf(%)=.false.) the computation of certain parmeters 
+c if you do not need these parameters:
+c     jf(1) Ne, jf(2) Te Ti Tn, jf(3) Ni, jf(21) ion drift, 
+c     jf(28) spread-F probability 
+c For some parameters the default is already .false.:
+c     jf(33) auroral boundaries,jf(35) foE storm model,
+c     jf(47) CGM coordinates 
+c If you use IRI with JF values other than the default values please
+c make sure to mention this in any publication that results from your
+c research.  
 c
-c!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+c Required files: irisub.for, irifun.for, iritec.for, iridreg.for, 
+c                 iriflip.for, igrf.for, cira.for, rocdrift.for        
+c
+c Required i/o units:  
+c  IRISUB.FOR, IRIFUN.FOR, IGRF.FOR:
+c   KONSOL= 6: Program messages to konsol       (if jf(12)=.true.)
+c   KONSOL=11: Program messages to MESSAGES.TXT (if jf(12)=.false.) 
+c	  (COMMON/iounit/konsol,mess is used to pass the values from  
+c	  IRISUB to IRIFUN and IGRF. If mess=false messages are turned off)
+c  IRISUB:
+c	IUCCIR=10: CCIR and URSI coefficients (CCIR%%.ASC, %%=month+10)
+c  IRIFUN:
+c   read_data_SD: UNIT=10 coefficients of Shubin (2015) hmF2 model  
+c   read_ig_rz: UNIT=12 Solar/ionospheric indices IG12, R12 (IG_RZ.DAT) 
+c   readapf107: UNIT=13 Magnetic indices and F10.7 (APF107.DAT)
+c  IGRF: 
+c   GETSHC: UNIT=14  IGRF coeff. (DGRF%%%%.DAT, IGRF%%%%.DAT, %%%%=year)
+c
+c***********************************************************************
+c***********************************************************************
+c***********************************************************************
 c
 c-version-mm/dd/yy ----------corrections--------------------------
 c 2000.01 05/07/01 initial version
@@ -77,17 +102,21 @@ C 2020.01 09/08/20 deleted extra jf(43) input                (C. Vasyl)
 C 2020.02 09/08/20 re-arranged jf inputs - if user input no options 
 C 2020.03 09/16/20 messages if auroral boundary or CGM are off
 C 2020.04 10/03/21 hmF2: Shubin model default, jf(40)=.false 
+C 2020.05 10/22/23 user input for htec_min for iri_web
+C 2020.05 10/22/23 delete user input option for HNEA and HNEE
+C 2020.05 10/22/23 hmF2: AMTB model (better results at low lat)(D.Drob)
+C 2020.05 10/22/23 topside/plasmasphere: NeQuick default 
 C
       INTEGER           pad1(6),jdprof(77),piktab
       DIMENSION         outf(20,1000),oar(100,1000),jfi(6)
       LOGICAL		    jf(50),rzino,igino
       CHARACTER*2       timev(2)
       CHARACTER*3       uni(86),sopt,seopt
-      CHARACTER*4       IMZ(8),MAP,xtex,coorv(2)
+      CHARACTER*4       IMZ(8),MAP,xtex,coorv(2),plpa
       CHARACTER*5       ITEXT(8),tsopt
       CHARACTER*6       pna(86)
       CHARACTER*7       popt
-      CHARACTER*8       bopt,topt
+      CHARACTER*8       bopt,topt,tiopt,pplas
       CHARACTER*9       pname(7)
       CHARACTER*10      dopt,hopt
       CHARACTER*11      iopt,rzopt,igopt,f8opt,fdopt
@@ -129,7 +158,7 @@ c		rzino=.true.
 c		igino=.true.
 c		ut0=-1
 
-		call read_ig_rz
+        call read_ig_rz
         call readapf107
         
         nummax=1000
@@ -163,8 +192,9 @@ c
         print *,'(enter 5 special test output)'
         read(5,*) piktab
 
-        print *,'upper height [km] for TEC integration (0 for no TEC)'
-        read(5,*) htec_max
+        print *,'lower and upper height [km] for TEC integration',
+     &          ' (valid range: 65-30,000 km) (0,0 for no TEC)'
+        read(5,*) htec_min,htec_max
 
         print *,'Options: t(rue) or f(alse)'
         print *,'Enter 0 to use standard or 1 to enter your own'
@@ -184,19 +214,19 @@ c          jf(3)=.false.      ! f=no ion composition (t)
 c          jf(7)=.false.      ! t=tops f10.7<188 f=unlimited (t)
 c          jf(19)=.false. 	 !F1 prob model   only if foF1>0 and not NIGHT (t)
 c          jf(20)=.false.     !standard F1  standard F1 plus L condition  (t)
-C (19,20) = (t,t) f1-prob, (t,f) f1-prob-L, (f,t) old F1, (f,f) no F1
-          jf(21)=.false.     ! t=ion drift computed f=not comp.(f)
+c (19,20) = (t,t) f1-prob, (t,f) f1-prob-L, (f,t) old F1, (f,f) no F1
+c          jf(21)=.false.     ! t=ion drift computed f=not comp.(f)
 c          jf(22)=.false.     ! ion densities in m-3 (t)
           jf(23)=.false.     ! t=AEROS/ISIS f=TTS Te with PF10.7 (f)
 c          jf(24)=.false.     ! t=D-reg-IRI-1990 f=FT-2001 (t)
-c		   jf(25)=.false.     ! t=F107D from APF107.DAT  f=user (t)
+c          jf(25)=.false.     ! t=F107D from APF107.DAT  f=user (t)
 c          jf(26)=.false.	 ! t=STORM model on   f= off (t)
-          jf(28)=.false.	 ! t=spread-F computed f=not comp. (f)
+c          jf(28)=.false.	 ! t=spread-F computed f=not comp. (f)
           jf(29)=.false.     ! t=old  f=New Topside options (f)
           jf(30)=.false.     ! t=corr f=NeQuick topside (f)
 C (29,30) = (t,t) IRIold, (f,t) IRIcor, (f,f) NeQuick, (t,f) COR2
 c          jf(31)=.false.     ! t=B0ABT f=Gulyaeva (t)
-c		   jf(32)=.false.     ! t=F107_81 from APF107.DAT  f=user (t)
+c          jf(32)=.false.     ! t=F107_81 from APF107.DAT  f=user (t)
           jf(33)=.false. 	  ! t=auroral boundary   f=off (f)
 c          jf(34)=.false. 	  ! t=messages on f= off (t)
           jf(35)=.false. 	  ! t=auroral E-storm model on f=off (f)
@@ -204,14 +234,15 @@ c          jf(36)=.false. 	  ! t=hmF2 w/out foF2_storm f=with (t)
 c          jf(37)=.false. 	  ! t=topside w/out foF2_storm f=with (t)
 c          jf(38)=.false. 	  ! t=WRITEs off in IRIFLIP f=on (t)
           jf(39)=.false. 	  ! t=M3000F2 model f=new hmF2 models (f)
-          jf(40)=.false. 	  ! t=AMTB-model, f=Shubin-COSMIC model (f) 
+c          jf(40)=.false. 	  ! t=AMTB-model, f=Shubin-COSMIC model (t) 
 c          jf(41)=.false. 	  ! t:COV=F10.7_386 f:COV=f(IG12) (t) 
 c          jf(42)=.false. 	  ! t/f=Te w/o PF10.7 dependance (t)
 c          jf(43)=.false. 	  ! t= B0 model f= B0 user input (t)
 c          jf(44)=.false. 	  ! t= B1 model f= B1 user input (t)
-c          jf(45)=.false. 	  ! t=HNEA=65/80 f=user input oarr(89)
-c          jf(46)=.false. 	  ! t=HNEE=2000  f=user input oarr(90)
-          jf(47)=.false. 	  ! t=CGM on  f=CGM off
+c          jf(45)=.false. 	  ! not used
+c          jf(46)=.false. 	  ! not used
+          jf(47)=.false. 	  ! t=CGM on  f=CGM off (f)
+c          jf(48)=.false. 	  ! t=Ti-Tru2021 f=Ti-Bil1981 (t)
         else
           print *,'Compute Ne, T, Ni? (enter: t,t,t  if you want all)'
           read(5,*) jf(1),jf(2),jf(3)
@@ -235,7 +266,7 @@ c          jf(46)=.false. 	  ! t=HNEE=2000  f=user input oarr(90)
      &              'f=user input {t}'
               	read(5,*) jf(8)
               if(jf(8)) then
-              	print *,'foF2 model: t=CCIR, f=URSI-88 {f}'
+              	print *,'foF2 model: t=CCIR-67, f=URSI-89 {f}'
               		read(5,*) jf(5)
               	print *,'foF2: t=with storm model, f=without {t}'
               		read(5,*) jf(26)
@@ -297,6 +328,8 @@ c          jf(46)=.false. 	  ! t=HNEE=2000  f=user input oarr(90)
               	read(5,*) jf(23)
               print *,'Te: t=TBT-2012 with PF107 dep., f=w/o {t}'
               	read(5,*) jf(42)
+              print *,'Ti: t=Tru-2021, f=Bil-1981 {t}'
+              	read(5,*) jf(48)
           	  endif
         if(jf(3)) then
               print *,'Ion comp. model: t=DS95/DY85, f=RBV10/TBT15 {f}' 
@@ -501,23 +534,6 @@ c
                         enddo
                     endif
 
-c option to enter HNEA and/or HNEE
-c
-            if(.not.jf(45)) then
-                    print *,'User input for HNEA/km'
-                    read(5,*) oar(89,1)
-                    do i=2,100
-                        oar(89,i)=oar(89,1)
-                        enddo
-                    endif
-            if(.not.jf(46)) then
-                    print *,'User input for HNEE/km'
-                    read(5,*) oar(90,1)
-                    do i=2,100
-                        oar(90,i)=oar(90,1)
-                        enddo
-                    endif
-
 c end of user input
 c
 
@@ -525,6 +541,10 @@ c
         numstp=iabs(num1)
         if(numstp.GT.nummax) numstp=nummax
 
+        pplas='GCC-2000'
+        if(jf(49)) pplas='OTSB2012'
+        plpa='with'
+        if(jf(50)) plpa='w/o '
         if(jf(29)) then
               if(jf(30)) then
                    popt='IRI2001''IRIcorr'
@@ -569,13 +589,17 @@ c
 
         sopt='off'
         if(jf(26)) sopt='on '
+        
         seopt='off'
         if(jf(35)) seopt='on '
 
         topt='TBT-2012'
-        if(jf(23)) topt='BIl-1985'
+        if(jf(23)) topt='Bil-1985'
         tsopt=' with'
         if(jf(23)) tsopt='  w/o'
+
+        tiopt='Bil-1981'
+        if(jf(48)) tiopt='TBKS2021'
 
         if(jf(19)) then
               f1opt='Scotto-97 no L'
@@ -602,15 +626,16 @@ c calling IRI subroutine
 c 
         phour=hour
         call iri_web(jmag,jf,xlat,xlon,iy,mmdd,iut,hour,
-     &          hxx,htec_max,ivar,vbeg,vend,vstp,outf,oar)
+     &    hxx,htec_min,htec_max,ivar,vbeg,vend,vstp,outf,oar)
 
 c preparation of results page
 c
         write(7,3991) iy,mmdd,phour,timev(iut+1),
      &        coorv(jmag+1),xlat,xlon,hxx
         if(jf(1)) then
-       		write(7,3314) popt
-            if(jf(8)) then
+       	  write(7,3314) popt
+          write(7,4314) pplas,plpa
+          if(jf(8)) then
             	write(7,301) map
                 write(7,3291) sopt
                 endif
@@ -635,7 +660,10 @@ c
                     endif                
             endif 
 
-        if(jf(2)) write(7,3292) topt,tsopt
+        if(jf(2)) then
+        	write(7,3292) topt,tsopt
+        	write(7,3297) tiopt
+        	endif
         if(jf(3)) write(7,329) iopt        
         if(.not.jf(47)) write(7,7234)
         if(.not.jf(33)) write(7,7235)
@@ -657,15 +685,15 @@ c
         write(7,2238) oar(41,1),fdopt
         write(7,2237) oar(46,1),f8opt
 
-        if(htec_max.gt.50.0) write(7,3914) htec_max
+        if(htec_max.gt.50.0) write(7,3914) htec_min,htec_max
 
 3991    format(///'yyyy/mmdd(or -ddd)/hh.h):',I4,'/',I4,'/',F4.1,
-     &      A2,2X,A4,' Lat/Long/Alt=',F5.1,'/',F6.1,'/',F6.1/)
+     &    A2,2X,A4,' Lat/Long/Alt=',F5.1,'/',F6.1,'/',F6.1/)
 3914    format(/'TEC [1.E16 m-2] is obtained by numerical integ',
-     &     'ration in 1km steps'/'  from 50 to ',f6.1,' km. ',
-     &     't is the percentage of TEC above the F peak.') 
+     &    'ration in 1km steps'/' from ',F7.1,' to ',F7.1,' km. ',
+     &    't is the percentage of TEC above the F peak.') 
 3916    format(/'M3000F2: Propagation factor related to hmF2'/
-     &     'B0: bottomside thickness parameter.') 
+     &    'B0: bottomside thickness parameter.') 
 301     format(A4,' maps are used for the F2 peak density (NmF2)')
 302     format(A9,' provided by user:')
 402     format(7(1PE10.3))
@@ -681,6 +709,7 @@ c
 3299    format('foE auroral storm model is turned ',A3)
 3292    format(A8,A5,' solar dependence is used for the electron',
      &          ' temperature')
+3297    format(A8,' option is used for the ion temperature')
 3293    format(A8,' option is used for the D-region Ne')
 3295    format(A16,' option is used for the F1 occurrence probability')
 211     format('Solar Zenith Angle/degree',28X,F6.1/
@@ -700,7 +729,8 @@ c
      &          '   hmE=',F9.2/)
 3314    format(A7,' is used for topside Ne profile')
 7234    format('CGM coordinates not computed') 
-7235    format('auroral boundaries not computed') 
+7235    format('auroral boundaries not computed')
+4314    format(A8,' plasmasphere model ',A4,' plasmapause') 
 c
 c table head .......................................................
 c
@@ -840,9 +870,12 @@ c
 c ----------- B0, B1 ----------------
 c        WRITE(8,4919) XCOR,oar(10,li),oar(35,li)
 c4919    FORMAT(F7.1,2X,F6.2,2X,F5.3)
-c ----------- Te ----------------
-        WRITE(8,4919) XCOR,outf(2,li),outf(3,li),outf(4,li)
-4919    FORMAT(F7.1,2X,F6.1,2X,F6.1,2X,F6.1)
+c ----------- Tn, Ti, Te ----------------
+c        WRITE(8,4919) XCOR,outf(2,li),outf(3,li),outf(4,li)
+c4919    FORMAT(F7.1,2X,F6.1,2X,F6.1,2X,F6.1)
+c ----------- SZA, Ne ----------------
+        WRITE(8,4919) oar(23,li),outf(1,li)
+4919    FORMAT(F7.1,2X,E12.5)
 c ----------- Ne, TEC ----------------
 c        WRITE(8,4919) XCOR,outf(1,li),oar(37,li)
 c4919    FORMAT(F7.1,2X,E12.5,2X,E12.5)
@@ -852,18 +885,22 @@ c     &   outf(7,li),outf(8,li),outf(9,li),outf(10,li),outf(11,li)
 c        WRITE(8,4919) XCOR,outf(1,li),outf(5,li),outf(6,li),
 c     &   outf(7,li),outf(8,li),outf(9,li),outf(10,li),outf(11,li)
 c4919    FORMAT(F7.1,2X,E12.5,7F10.4)
+c ----------- ion drift ----------------
+c        type*,xcor,oar(44,li),oar(41,li),oar(43,li)
+c        WRITE(8,4919) XCOR,oar(44,li)
+c4919    FORMAT(F7.1,1X,F6.2)
 c ----------- hmF2 ----------------
 c        type*,XCOR,oar(26,li),oar(2,li),oar(36,li),
 c     &   sqrt(oar(1,li)/oar(5,li)),oar(33,li),oar(39,li)
 c        WRITE(8,4919) XCOR,outf(1,li),outf(5,li),outf(6,li),
 c     &   outf(7,li),outf(8,li),outf(9,li),outf(10,li),outf(11,li)
-c4919    FORMAT(F7.1,2X,E12.5,7F10.4)
+c4919    FORMAT(F7.1,1X,E12.5,7F10.4)
 c ----------- auroral boundary ----------------
 c        print *,XCOR,oar(55,li),oar(56,li),oar(54,li),
 c     &     oar(57,li),oar(54,li)-oar(57,li),oar(58,li)
 cc        WRITE(8,4919) XCOR,outf(1,li),outf(5,li),outf(6,li),
 cc     &   outf(7,li),outf(8,li),outf(9,li),outf(10,li),outf(11,li)
-cc4919    FORMAT(F7.1,2X,E12.5,7F10.4)
+cc4919    FORMAT(F7.1,1X,E12.5,7F10.4)
 
         GOTO 1234
       ENDIF
@@ -915,7 +952,7 @@ c        print *, XCOR,jne,xner,jtn,jti,jte,jio,jin,
 c     &        jih,jihe,jino,jio2,jicl,tec,itopp
         WRITE(7,7117) XCOR,jne,xner,jtn,jti,jte,jio,jin,
      &        jih,jihe,jio2,jino,jicl,tec,itopp
-7117    FORMAT(F6.1,I8,1x,F6.3,3I6,7I4,f6.1,i4)
+7117    FORMAT(F7.1,I7,1x,F6.3,3I6,7I4,f6.1,i4)
 
 1234    xcor=xcor+vstp
 

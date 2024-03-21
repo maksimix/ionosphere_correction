@@ -1,4 +1,0 @@
-
-delt0=       1  eps=   1e-05  ep=   1e-06  ep1=   0.001
-Global Geomagnetic Field Model
-fh= 1.41  i=  64.7  d=   7.6

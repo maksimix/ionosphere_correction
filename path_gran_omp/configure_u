@@ -1,1 +1,0 @@
-qmake-qt5 -o Makefile paths_u.pro
