@@ -375,8 +375,8 @@ void resultMain(std::string fileInName, std::string filePelName, int cor, int fr
           }
           if (S(ih) > .0)
           {
-              printf("\n\n\n\n\n\n\n\n\n\n\n\n\n");
-              return ;
+            printf("\n\n\n\n\n\n\n\n\n\n\n\n\n");
+            return;
             if (cor) {
               Cor_number++;
             }
@@ -548,52 +548,52 @@ int main(int argc, char* argv[])
 
     char dirnameFreqCity_Copy[256];
 
-    strcpy(dirnameFreqCity_Copy,dirnameFreqCity);
+    strcpy(dirnameFreqCity_Copy, dirnameFreqCity);
     lenDIRCity = strlen(dirnameFreqCity_Copy);
     sprintf(dirnameFreqCity_Copy + lenDIRCity, "%d", std::stoi(freq));
 
     printf("dirnameFreqCity: %s\n", dirnameFreqCity_Copy);
     files_name_vector = readDir(dirnameFreqCity_Copy); // read filenames in folder and write its in array
-    printf("size: %d\n",files_name_vector.size());
+    printf("size: %d\n", files_name_vector.size());
     for (auto file : files_name_vector) {
       printf("filename: %s\n", file.c_str());
 
 
       int k2 = 1;
       int TimeCounter = 0;
-      int hop =0;
+      int hop = 0;
 
-      for(int k=0;k<files_name_vector.size();k++){
+      for (int k = 0; k < files_name_vector.size(); k++) {
 
-      sscanf(file.c_str(), "%d_%d_%d_%d_%*d%*s", &dYear, &dMonth, &dDay, &dTimeHour);
-      //printf("%d\n",dYear);
-      dTimeHour = (int)ceil(((double)dTimeHour/100));
+        sscanf(file.c_str(), "%d_%d_%d_%d_%*d%*s", &dYear, &dMonth, &dDay, &dTimeHour);
+        //printf("%d\n",dYear);
+        dTimeHour = (int)ceil(((double)dTimeHour / 100));
 
-      TimeCounter++;
+        TimeCounter++;
 
-      //printf("HOP: %d City:%d\n",hop,City.first);
+        //printf("HOP: %d City:%d\n",hop,City.first);
 
-      char* ch1noCor = getInputFile(0,file.c_str(),std::stoi(freq),hop, 0, dDay, dMonth,dYear); // files
-      //printf("%s\n",ch1noCor);
+        char* ch1noCor = getInputFile(0, file.c_str(), std::stoi(freq), hop, 0, dDay, dMonth, dYear); // files
+        //printf("%s\n",ch1noCor);
 
-      //char*  ch1 = getInputFile(1,file,freq,hop, 0, dDay,dMonth,dYear);
+        //char*  ch1 = getInputFile(1,file,freq,hop, 0, dDay,dMonth,dYear);
 
-      //resultMain(ch1,filesName[k],1,freqVectorElem,hop); //Calculate data  with cor
-      //free(ch1);
+        //resultMain(ch1,filesName[k],1,freqVectorElem,hop); //Calculate data  with cor
+        //free(ch1);
 
-if(dTimeHour == 8 && std::stoi(freq)== 9996 && dDay == 12){
-printf("time: %d freq:%d\n",dTimeHour, std::stoi(freq));
-      resultMain(ch1noCor,file,0,std::stoi(freq),hop);//Calculate data  without cor
-      free(ch1noCor);
-}
+        if (dTimeHour == 8 && std::stoi(freq) == 9996 && dDay == 12) {
+          printf("time: %d freq:%d\n", dTimeHour, std::stoi(freq));
+          resultMain(ch1noCor, file, 0, std::stoi(freq), hop);//Calculate data  without cor
+          free(ch1noCor);
+        }
 
+
+      }
+
+
+    }
 
   }
-
-
-  }
-
-}
   /*
       int k2 = 1;
       int TimeCounter = 0;
