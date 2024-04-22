@@ -1,2 +1,0 @@
-#qmake -t vcapp -o profil.dsp profil.pro
-qmake5 -o Makefile profil_u.pro

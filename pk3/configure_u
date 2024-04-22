@@ -1,1 +1,0 @@
-exec qmake pk3_u.pro -o Makefile

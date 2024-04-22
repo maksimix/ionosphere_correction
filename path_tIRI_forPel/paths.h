@@ -385,7 +385,8 @@ char* getCity(int city);
 std::vector<std::string> readDir(const char dirName[]);
 template <typename T> void  dynamic_array_free(T **arr, int N);
 template <typename T> T** dynamic_array_alloc(int N, int M);
-void resultMain(std::string fileInName, std::string filePelName, int cor, int freq, int _hop);
+//void resultMain(std::string fileInName, std::string filePelName, int cor, int freq, int _hop);
+int resultMain(std::string fileInName, std::string filePelName, int cor, int freq);
 char *getInputFile(int m, char * dataFileName, int freq,int hop,int city, int day, int month, int year);
 bool readIndexDasf(char *name);
 void prion(FILE   *out,

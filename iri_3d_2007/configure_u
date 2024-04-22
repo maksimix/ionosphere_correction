@@ -1,1 +1,0 @@
-exec qmake iri_3d_u_for.pro -o Makefile

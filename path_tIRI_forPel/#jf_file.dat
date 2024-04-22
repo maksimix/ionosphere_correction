@@ -25,7 +25,7 @@
 0	C   22    Te_tops (Bil-1985)     Te_topside (TBT-2012)           false
 1	C   23    D-region: IRI-1990     FT-2001 and DRS-1995                t
 1	C   24    F107D from APF107.DAT  F107D user input (oarr(41))         t
-1	C   25    foF2 storm model       no storm updating                   t
+0	C   25    foF2 storm model       no storm updating                   t
 1	C   26    IG12 from file         IG12 - user                         t
 0	C   27    spread-F probability 	 not computed                    false
 0	C   28    IRI01-topside          new options as def. by JF(30)   false
@@ -47,4 +47,7 @@
 1	C   44    HNEA=65/80km dya/night HNEA user input in OARR(89)         t
 1	C   45    HNEE=2000km 	         HNEE user input in OARR(90)         t
 0	C   46    CGM computation on 	 CGM computation off             false	
+1	C   47    Ti  Tru-2021           Bil-1981                            t
+
 		
+

@@ -1,0 +1,19 @@
+#!/bin/bash
+
+# Просим пользователя ввести значения для чисел через запятую
+read -p "Введите значения для чисел через запятую: " numbers
+
+# Разбиваем строку на массив чисел
+IFS=',' read -ra num_array <<< "$numbers"
+
+# Перебираем все числа и формируем URL для каждого из них
+for num in "${num_array[@]}"; do
+    # Формируем URL для текущего числа
+    url="https://cddis.nasa.gov/archive/gnss/products/ionosphere/2023/${num}/c1pg${num}0.23i.Z"
+    
+    # Выводим URL на экран
+    echo "$url"
+    
+    # Загружаем файл по построенному URL
+    wget "$url"
+done

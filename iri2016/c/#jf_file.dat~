@@ -33,7 +33,7 @@
 1	C   30    B0,B1 ABT-2009	     B0 Gulyaeva-1987 h0.5               t  (4,31) = (t,t) Bil-00, (f,t) ABT-09, (f,f) Gul-87, (t,f) not used
 1	C   31    F10.7_81 from file     F10.7_81 - user input (oarr(46))    t
 0	C   32    Auroral boundary model on/off  true/false	             false
-1	C   33    Messages on            Messages off                        t
+0	C   33    Messages on            Messages off                        t
 0	C   34    foE storm model        no foE storm updating           false
 1	C   35    hmF2 w/out foF2_storm  with foF2-storm                     t
 1	C   36    topside w/out foF2-storm  with foF2-storm                  t
